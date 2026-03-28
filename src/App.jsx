@@ -7,7 +7,7 @@ import {login, logout} from './store/authSlice';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-
+import ProtectedRoute from './components/ProtectedRoute';
 // Pages
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -60,20 +60,19 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          
-          {/* Uncomment these as we create the files */}
           <Route path="/products" element={<ProductListing />} /> 
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/dashboard" element={<Dashboard />} /> 
-          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/confirmation" element={<OrderConfirmation />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/shipping-returns" element={<ShippingReturns />} />
+          {/* Protected routes */}
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} /> 
+          <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+          <Route path="/confirmation" element={<ProtectedRoute><OrderConfirmation /></ProtectedRoute>} />
+          <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         </Routes>
       </main>
       {/* 4. Conditionally render Footer */}
