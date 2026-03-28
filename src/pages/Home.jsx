@@ -2,6 +2,7 @@ import React,{ useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import axios from 'axios';
+import heroBanner from '../assets/hero-banner.jpg';
 
 const Home = () => {
   // Mock data based on the UI design for Product Highlights
@@ -9,7 +10,6 @@ const Home = () => {
   const [highlightedProducts, setHighlightedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   // 2. Fetch data on component mount
   useEffect(() => {
     const fetchHighlights = async () => {
@@ -24,56 +24,43 @@ const Home = () => {
         setLoading(false);
       }
     };
-
     fetchHighlights();
+
   }, []);
 
   const categories = [
-    { id: 'c1', name: 'Gifts', link: '/products?category=gifts' },
-    { id: 'c2', name: 'Fashion', link: '/products?category=fashion' },
-    { id: 'c3', name: 'Home Decor', link: '/products?category=home-decor' },
-    { id: 'c4', name: 'Electronics', link: '/products?category=electronics' },
+    { id: 'c1', name: "Men's Fashion", apiName: "men's clothing", link: "/products?category=mens" },
+    { id: 'c2', name: "Women's Fashion", apiName: "women's clothing", link: "/products?category=womens" },
+    { id: 'c3', name: 'Jewelery', apiName: 'jewelery', link: '/products?category=jewelery' },
+    { id: 'c4', name: 'Electronics', apiName: 'electronics', link: '/products?category=electronics' },
   ];
 
   return (
     <div className="bg-white">
       
       {/* 1. Hero Section */}
-      <section className="relative bg-gray-100 h-96 flex items-center justify-center text-center px-4">
+      <section 
+  className="relative bg-gray-100 h-96 flex items-center justify-center text-center px-4"
+  style={{ 
+    backgroundImage: `url(${heroBanner})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center'
+  }}>
         <div className="relative z-10 max-w-2xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 drop-shadow-sm">
             Festive Finds, Every Time
           </h1>
           <Link 
             to="/products" 
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-md transition-colors shadow-md"
-          >
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-md transition-colors shadow-md" >
             Shop Now!
           </Link>
         </div>
       </section>
 
-      {/* 2. Featured Categories */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8">Featured Categories</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {categories.map((category) => (
-            <Link key={category.id} to={category.link} className="group text-center">
-              <div className="w-full aspect-square bg-gray-200 rounded-lg mb-4 overflow-hidden">
-                {/* Category Image Placeholder */}
-                <div className="w-full h-full bg-gray-300 group-hover:scale-105 transition-transform duration-300"></div>
-              </div>
-              <span className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors">
-                {category.name}
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* 3. Product Highlights */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col sm:flex-row justify-between items-baseline mb-8 gap-4">
+      {/*2. Product Highlights */}
+     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pd-16">
+        <div className="flex flex-col sm:flex-row justify-between items-baseline mb-4 gap-4">
           <h2 className="text-2xl font-bold text-gray-900">Product Highlights</h2>
           <div className="flex space-x-6 text-sm">
             <button className="text-blue-600 font-medium border-b-2 border-blue-600 pb-1">New Arrivals</button>
@@ -81,7 +68,7 @@ const Home = () => {
             <button className="text-gray-500 hover:text-gray-900 pb-1">Top Rated</button>
           </div>
         </div>
-      {/* 3b. Render Loading, Error, or Data */}
+        {/* 2b. Render Loading, Error, or Data */}
         {loading ? (
           <div className="flex justify-center items-center h-48">
              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
@@ -108,11 +95,28 @@ const Home = () => {
             ))}
           </div>
         )}
+      </section>
 
+      {/* 3. Featured Categories */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-8">Featured Categories</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {categories.map((category) => (
+            <Link key={category.id} to={category.link} className="group text-center">
+
+              <div className="w-full aspect-square bg-gray-100 rounded-lg mb-4 overflow-hidden flex items-center justify-center p-4">
+              </div>
+
+              <span className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors">
+                {category.name}
+              </span>
+            </Link>
+          ))}
+        </div>
       </section>
 
       {/* 4. Deal of the Week Banner */}
-      <section className="my-16 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-16 px-4 text-center">
+      <section className="mb-16 mt-8 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-16 px-4 text-center">
         <h2 className="text-3xl font-bold mb-4 drop-shadow-md">Deal of the Week</h2>
         <p className="text-xl mb-8 text-blue-100">Get 20% off all sweaters this week only!</p>
         <Link 
