@@ -1,21 +1,38 @@
-import React from 'react';
+import React,{ useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
+import axios from 'axios';
 
 const Home = () => {
   // Mock data based on the UI design for Product Highlights
-  const highlightedProducts = [
-    { id: 'p1', name: 'Cozy Sweater', price: 49.99, rating: 4.5, image: null }, // [cite: 58, 62]
-    { id: 'p2', name: 'Smart Watch', price: 129.00, rating: 4.8, image: null }, // [cite: 59, 63]
-    { id: 'p3', name: 'Throw Pillow', price: 25.50, rating: 4.2, image: null }, // [cite: 60, 64]
-    { id: 'p4', name: 'Wireless Earbuds', price: 79.99, rating: 4.6, image: null }, // [cite: 61, 65, 66]
-  ];
+   // 1. Setup State for API Data
+  const [highlightedProducts, setHighlightedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 2. Fetch data on component mount
+  useEffect(() => {
+    const fetchHighlights = async () => {
+      try {
+        setLoading(true);
+        // Using ?limit=4 to only grab 4 items for the homepage highlights
+        const response = await axios.get('https://fakestoreapi.com/products?limit=4');
+        setHighlightedProducts(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchHighlights();
+  }, []);
 
   const categories = [
-    { id: 'c1', name: 'Gifts', link: '/products?category=gifts' }, // [cite: 49]
-    { id: 'c2', name: 'Fashion', link: '/products?category=fashion' }, // [cite: 53]
-    { id: 'c3', name: 'Home Decor', link: '/products?category=home-decor' }, // [cite: 54]
-    { id: 'c4', name: 'Electronics', link: '/products?category=electronics' }, // [cite: 55]
+    { id: 'c1', name: 'Gifts', link: '/products?category=gifts' },
+    { id: 'c2', name: 'Fashion', link: '/products?category=fashion' },
+    { id: 'c3', name: 'Home Decor', link: '/products?category=home-decor' },
+    { id: 'c4', name: 'Electronics', link: '/products?category=electronics' },
   ];
 
   return (
@@ -23,23 +40,22 @@ const Home = () => {
       
       {/* 1. Hero Section */}
       <section className="relative bg-gray-100 h-96 flex items-center justify-center text-center px-4">
-        {/* If you have a background image, you'd add it to the section via style={{ backgroundImage: '...' }} */}
         <div className="relative z-10 max-w-2xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 drop-shadow-sm">
-            Festive Finds, Every Time {/*  */}
+            Festive Finds, Every Time
           </h1>
           <Link 
             to="/products" 
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-md transition-colors shadow-md"
           >
-            Shop Now! {/* [cite: 52] */}
+            Shop Now!
           </Link>
         </div>
       </section>
 
       {/* 2. Featured Categories */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8">Featured Categories {/*  */}</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-8">Featured Categories</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {categories.map((category) => (
             <Link key={category.id} to={category.link} className="group text-center">
@@ -58,25 +74,47 @@ const Home = () => {
       {/* 3. Product Highlights */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col sm:flex-row justify-between items-baseline mb-8 gap-4">
-          <h2 className="text-2xl font-bold text-gray-900">Product Highlights {/*  */}</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Product Highlights</h2>
           <div className="flex space-x-6 text-sm">
-            <button className="text-blue-600 font-medium border-b-2 border-blue-600 pb-1">New Arrivals {/* [cite: 56] */}</button>
-            <button className="text-gray-500 hover:text-gray-900 pb-1">Best Sellers {/* [cite: 57] */}</button>
-            <button className="text-gray-500 hover:text-gray-900 pb-1">Top Rated {/* [cite: 57] */}</button>
+            <button className="text-blue-600 font-medium border-b-2 border-blue-600 pb-1">New Arrivals</button>
+            <button className="text-gray-500 hover:text-gray-900 pb-1">Best Sellers</button>
+            <button className="text-gray-500 hover:text-gray-900 pb-1">Top Rated</button>
           </div>
         </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {highlightedProducts.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+      {/* 3b. Render Loading, Error, or Data */}
+        {loading ? (
+          <div className="flex justify-center items-center h-48">
+             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 font-medium py-10">
+            Error loading highlights: {error}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {highlightedProducts.map(product => (
+              <ProductCard 
+                key={product.id} 
+                product={{
+                  id: product.id,
+                  name: product.title,       // Mapping FakeStore API 'title' to your 'name' prop
+                  price: product.price,
+                  image: product.image,
+                  category: product.category,
+                  rating: product.rating?.rate, // Mapping nested rating
+                  reviewsCount: product.rating?.count
+                }} 
+              />
+            ))}
+          </div>
+        )}
+
       </section>
 
       {/* 4. Deal of the Week Banner */}
       <section className="my-16 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-16 px-4 text-center">
-        <h2 className="text-3xl font-bold mb-4 drop-shadow-md">Deal of the Week {/*  */}</h2>
-        <p className="text-xl mb-8 text-blue-100">Get 20% off all sweaters this week only! {/* [cite: 69] */}</p>
+        <h2 className="text-3xl font-bold mb-4 drop-shadow-md">Deal of the Week</h2>
+        <p className="text-xl mb-8 text-blue-100">Get 20% off all sweaters this week only!</p>
         <Link 
           to="/products?category=fashion" 
           className="inline-block bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-3 rounded-md transition-colors"
@@ -93,21 +131,21 @@ const Home = () => {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
-            <h3 className="text-gray-600 font-medium">Free Shipping {/* [cite: 67] */}</h3>
+            <h3 className="text-gray-600 font-medium">Free Shipping</h3>
           </div>
 
           <div className="flex flex-col items-center pt-8 md:pt-0">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-            <h3 className="text-gray-600 font-medium">24/7 Support {/* [cite: 70] */}</h3>
+            <h3 className="text-gray-600 font-medium">24/7 Support</h3>
           </div>
 
           <div className="flex flex-col items-center pt-8 md:pt-0">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
-            <h3 className="text-gray-600 font-medium">Money-Back Guarantee {/* [cite: 73] */}</h3>
+            <h3 className="text-gray-600 font-medium">Money-Back Guarantee</h3>
           </div>
 
         </div>
