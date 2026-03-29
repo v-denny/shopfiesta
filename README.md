@@ -2,6 +2,7 @@
 ShopFiesta is a React-based single-page application (SPA) currently at the completion of Phase 1. The application features a functional responsive frontend integrated with global state management and a third-party authentication provider. The project is version-controlled and continuously deployed to a production environment.
 
 **Live Demo:** [Click here to view the live project](https://shopfiesta.vercel.app/)
+
 https://github.com/user-attachments/assets/61e66531-aae0-406a-8d2c-ee89a60285e0
 
 ## Technology Stack
