@@ -1,4 +1,4 @@
-# Documentation: ShopFiesta E-Commerce Application
+# Documentation: ShopFiesta Ecommerce
 ShopFiesta is a React-based single-page application (SPA) currently at the completion of Phase 1. The application features a functional responsive frontend integrated with global state management and a third-party authentication provider. The project is version-controlled and continuously deployed to a production environment.
 
 ## Technology Stack
@@ -29,7 +29,7 @@ ShopFiesta is a React-based single-page application (SPA) currently at the compl
   * Authenticated state renders user-specific UI (avatar derived from `displayName` or `email`) and a functional logout mechanism invoking Firebase's `signOut` method.
 * Resolved production environment routing errors (404 Not Found on direct URL access) by deploying a `vercel.json` configuration file at the project root. This implements rewrite rules mapping all wildcard routes `/(.*)` to `index.html`.
 
-## Phase 2 Development Roadmap (Full-Stack Integration)
+## Phase 2 Development Roadmap 
 The immediate next objective is to transition the application to a full-stack architecture to support persistent database storage for user sessions and cart data.
 
 1. Server Initialization: Scaffold a Node.js/Express backend service (`shopfiesta-api`).
