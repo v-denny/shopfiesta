@@ -1,7 +1,7 @@
-https://github.com/user-attachments/assets/7bd66881-0bd0-4600-a4f8-90cdeb380f92
-
 # Documentation: ShopFiesta Ecommerce
 ShopFiesta is a React-based single-page application (SPA) currently at the completion of Phase 1. The application features a functional responsive frontend integrated with global state management and a third-party authentication provider. The project is version-controlled and continuously deployed to a production environment.
+
+**Live Demo:** [Click here to view the live project](https://shopfiesta.vercel.app/)
 
 ## Technology Stack
 * Frontend Framework: React 
@@ -37,3 +37,12 @@ The immediate next objective is to transition the application to a full-stack ar
 1. Server Initialization: Scaffold a Node.js/Express backend service (`shopfiesta-api`).
 2. Database Integration: Connect the server to a custom database (MongoDB or PostgreSQL).
 3. Data Synchronization: Develop API endpoints to securely transmit and retrieve `cartItems` between the React frontend and the database, utilizing the Firebase user `uid` as the primary key.
+
+## Running Locally
+To run this project on your local machine:
+
+1. Clone the repository: `git clone https://github.com/v-denny/shopfiesta.git`
+2. Navigate to the directory: `cd shopfiesta`
+3. Install dependencies: `npm install`
+4. Set up environment variables: Create a `.env` file in the root and add your Firebase config keys.
+5. Start the development server: `npm run dev`
