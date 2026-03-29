@@ -1,4 +1,4 @@
-# Technical Handoff Documentation: ShopFiesta E-Commerce Application
+# Documentation: ShopFiesta E-Commerce Application
 
 ## 1. Project Overview
 ShopFiesta is a React-based single-page application (SPA) currently at the completion of Phase 1. The application features a functional responsive frontend integrated with global state management and a third-party authentication provider. The project is version-controlled and continuously deployed to a production environment.
@@ -37,7 +37,3 @@ The immediate next objective is to transition the application to a full-stack ar
 1. Server Initialization: Scaffold a Node.js/Express backend service (`shopfiesta-api`).
 2. Database Integration: Connect the server to a custom database (MongoDB or PostgreSQL).
 3. Data Synchronization: Develop API endpoints to securely transmit and retrieve `cartItems` between the React frontend and the database, utilizing the Firebase user `uid` as the primary key.
-4. Route Security: Construct a `ProtectedRoute` wrapper component to restrict access to sensitive routes (`/dashboard`, `/checkout`) based on the Redux authentication state.
-5. Dynamic Content Integration: Replace static placeholder arrays in `ProductListing.jsx` and `ProductDetail.jsx` with dynamic asynchronous data fetching from the backend API.
-
-Please review this system architecture and confirm readiness to begin Step 1 of the Phase 2 roadmap.
