@@ -13,16 +13,35 @@ const ProductListing = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        setLoading(true);
+      setLoading(true);
+
+      // ATTEMPT 1: Primary API
+      try {
         const response = await axios.get('https://fakestoreapi.com/products');
         setProducts(response.data);
-        setLoading(false);
+        return;
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        console.warn("Primary API failed, trying fallback...", err.message);
       }
-    };
+
+      // ATTEMPT 2: Fallback API
+      const fallbackRes = await axios.get('https://dummyjson.com/products');
+      const normalized = fallbackRes.data.products.map(item => ({
+        id: item.id,
+        title: item.title,
+        price: item.price,
+        image: item.thumbnail,
+        category: item.category,
+        rating: { rate: item.rating, count: item.reviews?.length || 150 }
+      }));
+      setProducts(normalized);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
     fetchProducts();
   }, []);

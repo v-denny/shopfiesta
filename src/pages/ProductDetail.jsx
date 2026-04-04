@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice";
@@ -12,30 +12,59 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState("30ml");
   const [scent, setScent] = useState("Unscented");
-
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `https://fakestoreapi.com/products/${id}`,
-        );
-        setProduct(response.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  const normalizeData = (data, source) => {
+    if (source === "fakestore") return data;
+    return {
+      id: data.id,
+      title: data.title,
+      price: data.price,
+      description: data.description,
+      category: data.category,
+      image: Array.isArray(data.images) ? data.images[0] : data.thumbnail,
+      rating: {
+        rate: data.rating,
+        count: data.reviews?.length || 150
       }
     };
+  };
 
-    if (id) {
-      fetchProduct();
-    }
-  }, [id]);
+  const fetchProduct = useCallback(async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+      // --- ATTEMPT 1: The Primary API (FakeStore) ---
+      try { 
+        const res = await axios.get(`https://fakestoreapi.com/products/${id}`,);
+        if (res.data) {
+          setProduct(normalizeData(res.data, "fakestore"));
+          return; 
+        }
+      } catch (err) {
+        console.warn("Primary API failed, trying fallback...", err.message);
+      }
+     // --- ATTEMPT 2: Fallback API (DummyJSON) ---
+      const fallbackRes = await axios.get(`https://dummyjson.com/products/${id}`);
+      setProduct(normalizeData(fallbackRes.data, "dummy"));
+      } catch (error) {
+        console.error("Fallback API also failed:", error.message);
+        setError("Unable to load product details. Please try again later.");
+      } finally {
+        setLoading(false);  
+      }
+    }, [id]);
+
+    useEffect(() => {
+    if (id) fetchProduct();
+  }, [id, fetchProduct]);
+
+  // const handleAddToCart = () => {
+  //   dispatch(addToCart({ ...product, quantity, size, scent }));
+  // };
 
   if (loading) {
     return (

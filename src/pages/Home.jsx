@@ -12,21 +12,40 @@ const Home = () => {
   const [error, setError] = useState(null);
   // 2. Fetch data on component mount
   useEffect(() => {
-    const fetchHighlights = async () => {
+  const fetchHighlights = async () => {
+    try {
+      setLoading(true);
+
+      // ATTEMPT 1: Primary API
       try {
-        setLoading(true);
-        // Using ?limit=4 to only grab 4 items for the homepage highlights
         const response = await axios.get('https://fakestoreapi.com/products?limit=4');
         setHighlightedProducts(response.data);
-        setLoading(false);
+        return;
       } catch (err) {
-        setError(err.message);
-        setLoading(false);
+        console.warn("Primary API failed, trying fallback...", err.message);
       }
-    };
-    fetchHighlights();
 
-  }, []);
+      // ATTEMPT 2: Fallback API
+      const fallbackRes = await axios.get('https://dummyjson.com/products?limit=4');
+      const normalized = fallbackRes.data.products.map(item => ({
+        id: item.id,
+        title: item.title,
+        price: item.price,
+        image: item.thumbnail,
+        category: item.category,
+        rating: { rate: item.rating, count: item.reviews?.length || 150 }
+      }));
+      setHighlightedProducts(normalized);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchHighlights();
+}, []);
 
   const categories = [
     { id: 'c1', name: "Men's Fashion", apiName: "men's clothing", link: "/products?category=mens" },
