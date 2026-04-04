@@ -33,13 +33,10 @@ const Footer = () => {
           </div>
 
           {/* Link Columns */}
-          <div className="flex flex-wrap justify-center md:justify-end gap-8 md:gap-12">
-            <Link to="/about" className="text-gray-600 hover:text-blue-600">About us</Link>
-            <Link to="/shipping-returns" className="text-gray-600 hover:text-blue-600">Shipping & Returns Policy</Link>
-            <Link to="/faq" className="text-gray-600 hover:text-blue-600">Help Center</Link>
-            <Link to="/faq" className="text-gray-600 hover:text-blue-600">FAQs</Link>
-            <Link to="/careers" className="text-gray-600 hover:text-blue-600">Careers</Link>
-          </div>
+        <div className="flex flex-wrap justify-center md:justify-end gap-8 md:gap-12">
+            <Link to="/shipping-returns" className="text-gray-600 hover:text-blue-600">Shipping & Returns Policy</Link>            
+            <Link to="/faq" className="text-gray-600 hover:text-blue-600">FAQs</Link>          
+            </div>
         </div>
 
         {/* Bottom Section: Copyright & Socials */}

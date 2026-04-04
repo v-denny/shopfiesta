@@ -10,8 +10,7 @@ import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 // Pages
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import Auth from './pages/Auth';
 
 // We will uncomment these imports as we build the files!
 import ProductListing from './pages/ProductListing';
@@ -47,7 +46,7 @@ function App() {
     return () => unsubscribe();
   }, [dispatch]);
 
-   const hideNavAndFooter = location.pathname === '/signup' || location.pathname === '/login';
+   const hideNavAndFooter = location.pathname === '/auth';
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -58,8 +57,7 @@ function App() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          {/* <Route path="/signup" element={<Signup />} /> */}
+          <Route path="/auth" element={<Auth />} />
           <Route path="/products" element={<ProductListing />} /> 
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
@@ -68,6 +66,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/shipping-returns" element={<ShippingReturns />} />
+
           {/* Protected routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} /> 
           <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
@@ -75,6 +74,7 @@ function App() {
           <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         </Routes>
       </main>
+
       {/* 4. Conditionally render Footer */}
       {!hideNavAndFooter && <Footer />}
     </div>

@@ -119,12 +119,10 @@ const Home = () => {
       <section className="mb-16 mt-8 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-16 px-4 text-center">
         <h2 className="text-3xl font-bold mb-4 drop-shadow-md">Deal of the Week</h2>
         <p className="text-xl mb-8 text-blue-100">Get 20% off all sweaters this week only!</p>
-        <Link 
-          to="/products?category=fashion" 
-          className="inline-block bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-3 rounded-md transition-colors"
+        <button className="inline-block bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-3 rounded-md transition-colors"
         >
           View Deals
-        </Link>
+        </button>
       </section>
 
       {/* 5. Feature Bar */}

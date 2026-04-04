@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {signOut} from 'firebase/auth';
 import {auth} from '../firebase';
+import { logout } from '../store/authSlice';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 // Toggle state for the dropdown menu
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -13,7 +15,8 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate('/login') // Firebase kills the session
+      dispatch(logout());
+      navigate('/auth') // Firebase kills the session
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -47,9 +50,7 @@ const Navbar = () => {
 
           {/* Center: Navigation Links */}
           <div className="hidden md:flex space-x-8 items-center">
-            <Link to="/products" className="text-gray-600 hover:text-blue-600 font-medium">Categories</Link>
-            <Link to="/products?filter=deals" className="text-gray-600 hover:text-blue-600 font-medium">Deals</Link>
-            <Link to="/about" className="text-gray-600 hover:text-blue-600 font-medium">About</Link>
+            <Link to="/products" className="text-gray-600 hover:text-blue-600 font-medium">Categories</Link>            <Link to="/about" className="text-gray-600 hover:text-blue-600 font-medium">About</Link>
             <Link to="/contact" className="text-gray-600 hover:text-blue-600 font-medium">Contact</Link>
           </div>
 
@@ -90,7 +91,7 @@ const Navbar = () => {
                 </button>
               </div>
             ) : (
-              <Link to="/login" className="text-gray-600 hover:text-blue-600 font-medium flex items-center gap-1">
+              <Link to="/auth" className="text-gray-600 hover:text-blue-600 font-medium flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
