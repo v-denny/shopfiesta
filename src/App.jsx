@@ -19,11 +19,10 @@ import Cart from './pages/Cart';
 import Dashboard from './pages/Dashboard';
 import Wishlist from './pages/Wishlist';
 import NotFound from './pages/NotFound';
-import Contact from './pages/ContactUs';
+import Support from './pages/Support';
 import About from './pages/AboutUs';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
-import FAQ from './pages/FAQ';
 import ShippingReturns from './pages/ShippingReturns';
 
 function App() {
@@ -62,9 +61,8 @@ function App() {
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/support" element={<Support />} />
           <Route path="/about" element={<About />} />
-          <Route path="/faq" element={<FAQ />} />
           <Route path="/shipping-returns" element={<ShippingReturns />} />
 
           {/* Protected routes */}

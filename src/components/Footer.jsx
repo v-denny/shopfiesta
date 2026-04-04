@@ -34,8 +34,9 @@ const Footer = () => {
 
           {/* Link Columns */}
         <div className="flex flex-wrap justify-center md:justify-end gap-8 md:gap-12">
-            <Link to="/shipping-returns" className="text-gray-600 hover:text-blue-600">Shipping & Returns Policy</Link>            
-            <Link to="/faq" className="text-gray-600 hover:text-blue-600">FAQs</Link>          
+            <Link to="/shipping-returns" className="text-gray-600 hover:text-blue-600">Shipping & Returns </Link>            
+            <Link to="/About" className="text-gray-600 hover:text-blue-600">About</Link>
+            <Link to="/support" className="text-gray-600 hover:text-blue-600">FAQs</Link>          
             </div>
         </div>
 
