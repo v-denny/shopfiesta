@@ -3,6 +3,8 @@ ShopFiesta is a React-based single-page application (SPA) currently at the compl
 
 **Live Demo:** [Click here to view the live project](https://shopfiesta.vercel.app/)
 
+https://github.com/user-attachments/assets/61e66531-aae0-406a-8d2c-ee89a60285e0
+
 ## Technology Stack
 * Frontend Framework: React 
 * Routing: React Router DOM
