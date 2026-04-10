@@ -42,7 +42,7 @@ const Dashboard = () => {
               </Link>
               <Link to="/wishlist" className="px-6 py-4 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors border-l-4 border-transparent flex justify-between items-center">
                 Wishlist
-                <span className="bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs font-bold">12</span>
+                {/* <span className="bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs font-bold">12</span> */}
               </Link>
               <Link to="#" className="px-6 py-4 text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition-colors border-l-4 border-transparent">
                 Addresses

@@ -4,6 +4,8 @@ import {useDispatch} from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import {login, logout} from './store/authSlice';
+import { fetchCartAsync } from './store/cartSlice'; 
+import axios from 'axios';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -30,13 +32,25 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         dispatch(login({
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
         }));
+        try {
+        await axios.post('http://localhost:5000/api/users/sync-user', {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName
+        });
+        console.log("User synced to MongoDB successfully");
+        dispatch(fetchCartAsync(user.uid));
+
+      } catch (err) {
+        console.error("Failed to sync user to MongoDB:", err);     
+     }
       } else {
         dispatch(logout());
       }

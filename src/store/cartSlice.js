@@ -1,8 +1,41 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+
+export const fetchCartAsync = createAsyncThunk(
+  'cart/fetchCartAsync',
+  async (uid) => {
+    const response = await axios.get(`http://localhost:5000/api/cart/${uid}`);
+    return response.data; // Should return the cart array from MongoDB
+  }
+);
+
+export const addToCartAsync = createAsyncThunk(
+  'cart/addToCartAsync',
+  async ({ uid, product }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/cart/add', {
+        uid,
+        product,
+      });
+      return response.data; // This is the updated cart from MongoDB
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const removeFromCartAsync = createAsyncThunk(
+  'cart/removeFromCartAsync',
+  async ({ uid, productId }) => {
+    const response = await axios.post('http://localhost:5000/api/cart/remove', { uid, productId });
+    return response.data;
+  }
+);
 
 const initialState = {
   items: [],
   totalQuantity: 0,
+  status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
 }
 
 const cartSlice = createSlice({
@@ -35,7 +68,28 @@ const cartSlice = createSlice({
       }
     },
   },
-})
+  extraReducers: (builder) => {
+    builder
+      .addCase(addToCartAsync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(addToCartAsync.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // Sync Redux state with the ground truth from MongoDB
+        state.items = action.payload.map(item => ({
+            id: item.productId,
+            name: item.name,
+            price: item.price,
+            image: item.image,
+            quantity: item.quantity
+        }));
+        state.totalQuantity = state.items.reduce((acc, item) => acc + item.quantity, 0);
+      })
+      .addCase(addToCartAsync.rejected, (state) => {
+        state.status = 'failed';
+      });
+  },
+});
 
 export const { addToCart, removeFromCart, decrementQuantity } = cartSlice.actions
 export default cartSlice.reducer

@@ -1,31 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../store/cartSlice';
+import { toggleWishlistAsync } from '../store/wishlistSlice';
+import axios from 'axios';
 
 const Wishlist = () => {
   const dispatch = useDispatch();
 
-  // Mock data based on the design document
-  const initialWishlist = [
-    { id: 'w1', name: 'Sparkle Party Dress', price: 75.99, originalPrice: 99.99, image: null },
-    { id: 'w2', name: 'Festive LED Lights', price: 25.50, image: null },
-    { id: 'w3', name: 'Gift Wrapping Paper Set', price: 12.00, image: null },
-    { id: 'w4', name: 'Gourmet Chocolate Box', price: 35.00, originalPrice: 40.00, image: null },
-    { id: 'w5', name: 'Cozy Throw Blanket', price: 45.75, image: null },
-    { id: 'w6', name: 'Smart Home Speaker', price: 120.00, image: null },
-    { id: 'w7', name: 'Holiday Scented Candles (Set of 3)', price: 29.99, originalPrice: 35.00, image: null },
-    { id: 'w8', name: 'Kids Toy Robot', price: 55.00, image: null },
-    { id: 'w9', name: 'Wireless Earbuds', price: 89.95, image: null },
-    { id: 'w10', name: 'Espresso Machine', price: 250.00, image: null },
-    { id: 'w11', name: 'Yoga Mat', price: 30.00, originalPrice: 35.00, image: null },
-  ];
+  const { items: wishlistIds } = useSelector((state) => state.wishlist);
+  const { user } = useSelector((state) => state.auth);
+
+  const initialWishlist = [];
 
   const [wishlistItems, setWishlistItems] = useState(initialWishlist);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchWishlistProducts = async () => {
+      setLoading(true);
+      try {
+        const promises = wishlistIds.map(id =>
+          axios.get(`https://dummyjson.com/products/${id}`).then(res => ({
+             id: res.data.id,
+             name: res.data.title,
+             price: res.data.price,
+             image: res.data.thumbnail
+          }))
+        );
+        const products = await Promise.all(promises);
+        setWishlistItems(products);
+      } catch (error) {
+        console.error("Error fetching wishlist products:", error);
+      }
+      setLoading(false);
+    };
+
+    if (wishlistIds.length > 0) {
+      fetchWishlistProducts();
+    } else {
+      setWishlistItems([]);
+    }
+  }, [wishlistIds]);
 
   const handleRemove = (id) => {
-    setWishlistItems(wishlistItems.filter(item => item.id !== id));
-  };
+    dispatch(toggleWishlistAsync({ uid: user.uid, productId: String(id) }));  };
 
   const handleAddToCart = (item) => {
     dispatch(addToCart(item));

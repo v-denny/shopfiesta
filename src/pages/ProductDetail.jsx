@@ -1,12 +1,16 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../store/cartSlice";
 import axios from "axios";
+import { toggleWishlistAsync } from "../store/wishlistSlice"; 
+
 
 const ProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const wishlistItems = useSelector((state) => state.wishlist?.items || []);
 
   // Local state for options
   const [quantity, setQuantity] = useState(1);
@@ -16,6 +20,8 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const isWishlisted = product ? wishlistItems.includes(String(product.id)) : false;
+  
   const normalizeData = (data, source) => {
     if (source === "fakestore") return data;
     return {
@@ -62,10 +68,6 @@ const ProductDetail = () => {
     if (id) fetchProduct();
   }, [id, fetchProduct]);
 
-  // const handleAddToCart = () => {
-  //   dispatch(addToCart({ ...product, quantity, size, scent }));
-  // };
-
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -87,6 +89,11 @@ const ProductDetail = () => {
   const handleAddToCart = () => {
     // Dispatch to Redux, including the selected quantity
     dispatch(addToCart({ ...product, quantity, size, scent }));
+  };
+
+  const handleWishlistToggle = () => {
+    if (!user) return alert("Please login to add to wishlist");
+    dispatch(toggleWishlistAsync({ uid: user.uid, productId: String(product.id) }));
   };
 
   return (
@@ -251,10 +258,11 @@ const ProductDetail = () => {
           >
             Add to Cart
           </button>
-          <button className="px-4 py-3 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 transition-colors">
-            <svg
-              className="w-6 h-6"
-              fill="none"
+          <button 
+          onClick={handleWishlistToggle}
+          className="px-4 py-3 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 transition-colors">
+            <svg 
+              className={`w-6 h-6 transition-colors ${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-400'}`}              fill={isWishlisted ? "currentColor" : "none"}
               viewBox="0 0 24 24"
               stroke="currentColor"
             >

@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { addToCart, removeFromCart, decrementQuantity } from '../store/cartSlice';
+import { addToCart, addToCartAsync, removeFromCart, removeFromCartAsync, decrementQuantity, fetchCartAsync } from '../store/cartSlice';
 
 const Cart = () => {
-  const { items, totalQuantity } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-
+// Get status and user info
+  const { items, totalQuantity, status } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.auth);
   // Calculations
   const subtotal = items.reduce((total, item) => total + (item.price * item.quantity), 0);
   const shipping = subtotal > 100 ? 0 : 8.00; // Free shipping over $100
@@ -16,7 +17,27 @@ const Cart = () => {
   const freeShippingThreshold = 100;
   const amountToFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
 
-  if (items.length === 0) {
+  // Handle Delete with Database Sync
+  const handleRemove = (productId) => {
+    // Local update
+    dispatch(removeFromCart(productId));
+    // Database sync
+    if (user?.uid) {
+      dispatch(removeFromCartAsync({ uid: user.uid, productId }));
+    }
+  };
+
+  //Handle Loading State (Prevents the "Blank/Black" screen)
+  if (status === 'loading') {
+    return (
+      <div className="h-[80vh] flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[rgb(100,106,232)]"></div>
+        <p className="mt-4 text-gray-600">Loading your festive finds...</p>
+      </div>
+    );
+  }
+
+  if (items.length === 0 && status !== 'loading') {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center h-[60vh] flex flex-col items-center justify-center">
         <svg className="w-24 h-24 text-gray-300 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -98,7 +119,7 @@ const Cart = () => {
 
                   {/* Remove Button */}
                   <button 
-                    onClick={() => dispatch(removeFromCart(item.id))}
+                    onClick={() => handleRemove(item.id)}
                     className="text-gray-400 hover:text-red-500 transition-colors"
                     aria-label="Remove item"
                   >

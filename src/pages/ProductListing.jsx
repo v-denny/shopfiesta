@@ -160,11 +160,7 @@ const ProductListing = () => {
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map(product => (
-            <Link key={product.id} to={`/products/${product.id}`} className="block group">
-              
-              {/* Wrapping ProductCard with extra brand context since our base card didn't include a brand sub-label */}
-              {/* <div className="text-xs text-gray-500 mb-1">{product.brand}</div> */}
-              <ProductCard product={{
+            <ProductCard key={product.id} product={{
       id: product.id,
       name: product.title,
       price: product.price,
@@ -172,8 +168,7 @@ const ProductListing = () => {
       category: product.category,
       rating: product.rating?.rate,
       reviewsCount: product.rating?.count
-              }} />
-            </Link>
+           }} />
           ))}
         </div>
 

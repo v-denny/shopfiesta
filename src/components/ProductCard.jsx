@@ -1,21 +1,70 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../store/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, addToCartAsync } from '../store/cartSlice';
+import { toggleWishlistAsync } from '../store/wishlistSlice';
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
 
-  const handleAddToCart = (e) => {
-    e.preventDefault(); // Prevent navigating to the product page when clicking the button
-    dispatch(addToCart({ ...product, quantity: 1 })); // Add default quantity of 1 to the cart
+  // 1. Get the user from Redux auth state
+  const { user } = useSelector((state) => state.auth);
+  const wishlistItems = useSelector((state) => state.wishlist.items); 
+  const isWishlisted = wishlistItems.includes(String(product.id));
+  
+  const handleWishlistToggle = (e) => {
+    e.preventDefault(); 
+    if (!user) {
+      alert("Please login to add items to your wishlist!");
+      return;
+    }
+
+    dispatch(toggleWishlistAsync({ 
+      uid: user.uid, 
+      productId: String(product.id) 
+    }));
   };
 
-  return (
+  const handleAddToCart = (e) => {
+    e.preventDefault(); // Prevent navigating to the product page when clicking the button
+    dispatch(addToCart({ ...product, quantity: 1 })); 
+
+    // 3. Database Sync: Only if the user is logged in
+    if (user?.uid) {
+      dispatch(addToCartAsync({ 
+        uid: user.uid, 
+        product: {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image
+        } 
+      }));
+    }
+  }; 
+
+  return ( 
+  <div className="relative group"> {/* Wrapper to handle absolute positioning of heart */}
+      
+      {/* 4. The Wishlist Button */}
+      <button 
+        onClick={handleWishlistToggle}
+        className="absolute top-6 right-6 z-20 p-2 bg-white rounded-full shadow-md transition-all duration-300 hover:scale-110"
+        aria-label="Toggle Wishlist"
+      >
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          className={`h-5 w-5 transition-colors ${isWishlisted ? 'text-red-500 fill-current' : 'text-gray-400'}`} 
+          fill={isWishlisted ? "currentColor" : "none"} 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      </button>
+
     <Link to={`/products/${product.id}`} className="group block">
       <div className=" group flex flex-col w-full h-full relative pt-2">
-        {/* */}
-
         {/* Product Image Placeholder */}
         <div className="relative aspect-square bg-gray-100 flex items-center justify-center p-6 m-3 rounded-lg shadow-lg overflow-hidden transition-transform duration-300 group-hover:-translate-y-1">          
           {product.image ? (
@@ -48,8 +97,8 @@ const ProductCard = ({ product }) => {
             <button 
               onClick={handleAddToCart}
               className="bg-blue-50 text-blue-600 p-2 rounded-full hover:bg-blue-600 hover:text-white transition-colors"
-              aria-label="Add to cart"
-            >
+              aria-label="Add to cart">
+                
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
@@ -58,6 +107,7 @@ const ProductCard = ({ product }) => {
         </div>
       </div>
     </Link>
+  </div>
   );
 };
 
