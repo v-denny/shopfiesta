@@ -1,4 +1,4 @@
-import {signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
+import {signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword /*, sendEmailVerification */} from 'firebase/auth';
 import {auth, googleProvider} from '../firebase';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -20,9 +20,16 @@ const Auth = () => {
 
       if (isLogin){
         res = await signInWithEmailAndPassword(auth, email, password);
+        // if (!res.user.emailVerified) {
+        //   alert("Please verify your email before logging in. Check your inbox for the verification link.");
+        //   return;
+        // }
         console.log("Logged in successfully!");
       } else{
         res = await createUserWithEmailAndPassword(auth, email, password);
+        // await sendEmailVerification(res.user);
+        // alert("Account created successfully! Please check your email to verify your account before logging in.");
+        // return; // Don't log in yet
         console.log("Account created successfully!");
       }
       dispatch(login({ 
@@ -32,7 +39,15 @@ const Auth = () => {
       navigate('/dashboard'); 
     } catch (error) {
       console.error("Auth Error:", error.message);
-      alert("Invalid email or password.");
+      if (error.code === 'auth/email-already-in-use') {
+        alert("This email is already registered. Please log in instead.");
+      } else if (error.code === 'auth/wrong-password') {
+        alert("Incorrect password. Please try again.");
+      } else if (error.code === 'auth/user-not-found') {
+        alert("No account found with this email. Please create an account.");
+      } else {
+        alert("Authentication failed. Please check your details and try again.");
+      }
     }
   };
 
