@@ -1,8 +1,7 @@
 import React from 'react';
 import ProductCard from '../components/ProductCard';
-import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react'; 
-import axios from 'axios';
+import apiClient from '../api/axiosConfig';
 
 const ProductListing = () => {
   // Mock product data based on the design 
@@ -14,29 +13,32 @@ const ProductListing = () => {
     const fetchProducts = async () => {
       try {
       setLoading(true);
+      const response = await apiClient.get('/products');
+      setProducts(response.data);
 
-      // ATTEMPT 1: Primary API
-      try {
-        const response = await axios.get('https://fakestoreapi.com/products');
-        setProducts(response.data);
-        return;
-      } catch (err) {
-        console.warn("Primary API failed, trying fallback...", err.message);
-      }
-
-      // ATTEMPT 2: Fallback API
-      const fallbackRes = await axios.get('https://dummyjson.com/products');
-      const normalized = fallbackRes.data.products.map(item => ({
-        id: item.id,
-        title: item.title,
-        price: item.price,
-        image: item.thumbnail,
-        category: item.category,
-        rating: { rate: item.rating, count: item.reviews?.length || 150 }
-      }));
-      setProducts(normalized);
+  // ATTEMPT 1: Primary API
+      // try {
+      //   const response = await axios.get('https://fakestoreapi.com/products');
+      //   setProducts(response.data);
+      //   return;
+      // } catch (err) {
+      //   console.warn("Primary API failed, trying fallback...", err.message);
+      // }
+  
+  // ATTEMPT 2: Fallback API
+      // const fallbackRes = await axios.get('https://dummyjson.com/products');
+      // const normalized = fallbackRes.data.products.map(item => ({
+      //   id: item.id,
+      //   title: item.title,
+      //   price: item.price,
+      //   image: item.thumbnail,
+      //   category: item.category,
+      //   rating: { rate: item.rating, count: item.reviews?.length || 150 }
+      // }));
+      // setProducts(normalized);
 
     } catch (err) {
+      console.error("Backend fetch failed:", err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -160,8 +162,8 @@ const ProductListing = () => {
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map(product => (
-            <ProductCard key={product.id} product={{
-      id: product.id,
+            <ProductCard key={product._id} product={{
+      id: product._id,
       name: product.title,
       price: product.price,
       image: product.image,

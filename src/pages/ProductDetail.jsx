@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../store/cartSlice";
-import axios from "axios";
+import apiClient from "../api/axiosConfig";
 import { toggleWishlistAsync } from "../store/wishlistSlice"; 
 
 
@@ -20,44 +20,18 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const isWishlisted = product ? wishlistItems.includes(String(product.id)) : false;
-  
-  const normalizeData = (data, source) => {
-    if (source === "fakestore") return data;
-    return {
-      id: data.id,
-      title: data.title,
-      price: data.price,
-      description: data.description,
-      category: data.category,
-      image: Array.isArray(data.images) ? data.images[0] : data.thumbnail,
-      rating: {
-        rate: data.rating,
-        count: data.reviews?.length || 150
-      }
-    };
-  };
+  const isWishlisted = product && product._id ? wishlistItems.includes(String(product._id)) : false;
 
   const fetchProduct = useCallback(async () => {
       try {
         setLoading(true);
         setError(null);
 
-      // --- ATTEMPT 1: The Primary API (FakeStore) ---
-      try { 
-        const res = await axios.get(`https://fakestoreapi.com/products/${id}`,);
-        if (res.data) {
-          setProduct(normalizeData(res.data, "fakestore"));
-          return; 
-        }
-      } catch (err) {
-        console.warn("Primary API failed, trying fallback...", err.message);
-      }
-     // --- ATTEMPT 2: Fallback API (DummyJSON) ---
-      const fallbackRes = await axios.get(`https://dummyjson.com/products/${id}`);
-      setProduct(normalizeData(fallbackRes.data, "dummy"));
+        const res = await apiClient.get(`/products/${id}`);
+
+        setProduct(res.data);
       } catch (error) {
-        console.error("Fallback API also failed:", error.message);
+        console.error("Fetch failed:", error.message);
         setError("Unable to load product details. Please try again later.");
       } finally {
         setLoading(false);  
@@ -88,12 +62,20 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     // Dispatch to Redux, including the selected quantity
-    dispatch(addToCart({ ...product, quantity, size, scent }));
+    dispatch(addToCart({ 
+      id: product._id,           // Map _id to id
+  name: product.title,       // Map title to name (Crucial!)
+  image: product.image,      // Ensure this is 'image'
+  price: product.price, 
+  quantity, 
+  size, 
+  scent
+     }));
   };
 
   const handleWishlistToggle = () => {
     if (!user) return alert("Please login to add to wishlist");
-    dispatch(toggleWishlistAsync({ uid: user.uid, productId: String(product.id) }));
+    dispatch(toggleWishlistAsync({ uid: user.uid, productId: String(product._id) }));
   };
 
   return (

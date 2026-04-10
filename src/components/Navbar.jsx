@@ -50,8 +50,11 @@ const Navbar = () => {
 
           {/* Center: Navigation Links */}
           <div className="hidden md:flex space-x-8 items-center">
-            <Link to="/products" className="text-gray-600 hover:text-blue-600 font-medium">Categories</Link>            <Link to="/about" className="text-gray-600 hover:text-blue-600 font-medium">About</Link>
+            <Link to="/products" className="text-gray-600 hover:text-blue-600 font-medium">Categories</Link>            
+            <Link to="/about" className="text-gray-600 hover:text-blue-600 font-medium">About</Link>
             <Link to="/support" className="text-gray-600 hover:text-blue-600 font-medium">Contact</Link>
+            <Link to="/wishlist" className="text-gray-600 hover:text-blue-600 font-medium">Wishlist</Link>
+
           </div>
 
           {/* Right: Search, Auth, Cart */}

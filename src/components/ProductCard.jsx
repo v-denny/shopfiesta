@@ -7,10 +7,9 @@ import { toggleWishlistAsync } from '../store/wishlistSlice';
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
 
-  // 1. Get the user from Redux auth state
   const { user } = useSelector((state) => state.auth);
   const wishlistItems = useSelector((state) => state.wishlist.items); 
-  const isWishlisted = wishlistItems.includes(String(product.id));
+  const isWishlisted = wishlistItems && product.id ? wishlistItems.includes(String(product.id)) : false;
   
   const handleWishlistToggle = (e) => {
     e.preventDefault(); 

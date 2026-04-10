@@ -1,11 +1,10 @@
 import React,{ useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import axios from 'axios';
 import heroBanner from '../assets/hero-banner.jpg';
+import apiClient from '../api/axiosConfig';
 
 const Home = () => {
-  // Mock data based on the UI design for Product Highlights
    // 1. Setup State for API Data
   const [highlightedProducts, setHighlightedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,28 +14,8 @@ const Home = () => {
   const fetchHighlights = async () => {
     try {
       setLoading(true);
-
-      // ATTEMPT 1: Primary API
-      try {
-        const response = await axios.get('https://fakestoreapi.com/products?limit=4');
-        setHighlightedProducts(response.data);
-        return;
-      } catch (err) {
-        console.warn("Primary API failed, trying fallback...", err.message);
-      }
-
-      // ATTEMPT 2: Fallback API
-      const fallbackRes = await axios.get('https://dummyjson.com/products?limit=4');
-      const normalized = fallbackRes.data.products.map(item => ({
-        id: item.id,
-        title: item.title,
-        price: item.price,
-        image: item.thumbnail,
-        category: item.category,
-        rating: { rate: item.rating, count: item.reviews?.length || 150 }
-      }));
-      setHighlightedProducts(normalized);
-
+      const response = await apiClient.get('/products');
+      setHighlightedProducts(response.data.slice(0, 4));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -100,14 +79,14 @@ const Home = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {highlightedProducts.map(product => (
               <ProductCard 
-                key={product.id} 
+                key={product._id} 
                 product={{
-                  id: product.id,
-                  name: product.title,       // Mapping FakeStore API 'title' to your 'name' prop
+                  id: product._id,
+                  name: product.title,       
                   price: product.price,
                   image: product.image,
                   category: product.category,
-                  rating: product.rating?.rate, // Mapping nested rating
+                  rating: product.rating?.rate, 
                   reviewsCount: product.rating?.count
                 }} 
               />

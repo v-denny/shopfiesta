@@ -5,7 +5,10 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import {login, logout} from './store/authSlice';
 import { fetchCartAsync } from './store/cartSlice'; 
-import axios from 'axios';
+import { fetchWishlistAsync } from './store/wishlistSlice'; 
+// import axios from 'axios';
+import apiClient from './api/axiosConfig';
+
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -40,13 +43,14 @@ function App() {
           displayName: user.displayName,
         }));
         try {
-        await axios.post('http://localhost:5000/api/users/sync-user', {
+        await apiClient.post('/users/sync-user', {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName
         });
         console.log("User synced to MongoDB successfully");
         dispatch(fetchCartAsync(user.uid));
+        dispatch(fetchWishlistAsync(user.uid));
 
       } catch (err) {
         console.error("Failed to sync user to MongoDB:", err);     

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { addToCart, addToCartAsync, removeFromCart, removeFromCartAsync, decrementQuantity, fetchCartAsync } from '../store/cartSlice';
+import { addToCart, removeFromCart, removeFromCartAsync, decrementQuantity, incrementQuantity, fetchCartAsync, decrementQuantityAsync, incrementQuantityAsync } from '../store/cartSlice';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -19,13 +19,32 @@ const Cart = () => {
 
   // Handle Delete with Database Sync
   const handleRemove = (productId) => {
-    // Local update
     dispatch(removeFromCart(productId));
     // Database sync
     if (user?.uid) {
       dispatch(removeFromCartAsync({ uid: user.uid, productId }));
     }
   };
+
+  const handleDecrement = (productId) => {
+  // 1. Instant UI update
+  dispatch(decrementQuantity(productId));
+  
+  // 2. Sync with MongoDB
+  if (user?.uid) {
+    dispatch(decrementQuantityAsync({ uid: user.uid, productId }));
+  }
+};
+
+  const handleIncrement = (productId) => {
+  // 1. Instant UI update
+  dispatch(incrementQuantity(productId));
+  
+  // 2. Sync with MongoDB
+  if (user?.uid) {
+    dispatch(incrementQuantityAsync({ uid: user.uid, productId }));
+  }
+};
 
   //Handle Loading State (Prevents the "Blank/Black" screen)
   if (status === 'loading') {
@@ -77,16 +96,20 @@ const Cart = () => {
           {/* Item List */}
           <div className="space-y-6">
             {items.map((item) => (
-              <div key={`${item.id}-${item.size || 'default'}`} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white p-4 border border-gray-200 rounded-lg">
+              <div key={`${item._id}-${item.size || 'default'}`} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white p-4 border border-gray-200 rounded-lg">
                 
                 {/* Image Placeholder */}
-                <div className="w-24 h-24 bg-gray-100 rounded-md flex-shrink-0 flex items-center justify-center">
-                  <span className="text-gray-400 text-xs">Image</span>
+                <div className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden border border-gray-100 p-2">
+                <img 
+                    src={item.image} 
+                    alt={item.name} 
+                    className="w-full h-full object-contain mix-blend-multiply" 
+                  />
                 </div>
-
+                
                 {/* Info */}
                 <div className="flex-1">
-                  <Link to={`/products/${item.id}`} className="text-lg font-bold text-gray-900 hover:text-blue-600 block mb-1">
+                  <Link to={`/products/${item._id}`} className="text-lg font-bold text-gray-900 hover:text-blue-600 block mb-1">
                     {item.name}
                   </Link>
                   {(item.size || item.scent) && (
@@ -105,21 +128,21 @@ const Cart = () => {
                   {/* Quantity */}
                   <div className="flex items-center border border-gray-300 rounded-md">
                     <button 
-                      onClick={() => dispatch(decrementQuantity(item.id))}
+                     onClick={() => handleDecrement(item._id)}
                       className="px-3 py-1 text-gray-600 hover:bg-gray-100"
                     >-</button>
                     <span className="px-3 py-1 font-medium text-gray-900 border-x border-gray-300 min-w-[2.5rem] text-center">
                       {item.quantity}
                     </span>
                     <button 
-                      onClick={() => dispatch(addToCart(item))}
+                      onClick={() => handleIncrement(item._id)}
                       className="px-3 py-1 text-gray-600 hover:bg-gray-100"
                     >+</button>
                   </div>
 
                   {/* Remove Button */}
                   <button 
-                    onClick={() => handleRemove(item.id)}
+                    onClick={() => handleRemove(item._id)}
                     className="text-gray-400 hover:text-red-500 transition-colors"
                     aria-label="Remove item"
                   >

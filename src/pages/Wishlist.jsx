@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../store/cartSlice';
-import { toggleWishlistAsync } from '../store/wishlistSlice';
-import axios from 'axios';
+import { toggleWishlistAsync, fetchWishlistAsync } from '../store/wishlistSlice';
+import apiClient from '../api/axiosConfig';
 
 const Wishlist = () => {
   const dispatch = useDispatch();
 
-  const { items: wishlistIds } = useSelector((state) => state.wishlist);
+  const { items: wishlistIds, status: wishlistStatus } = useSelector((state) => state.wishlist);
   const { user } = useSelector((state) => state.auth);
 
   const initialWishlist = [];
@@ -20,15 +20,16 @@ const Wishlist = () => {
     const fetchWishlistProducts = async () => {
       setLoading(true);
       try {
-        const promises = wishlistIds.map(id =>
-          axios.get(`https://dummyjson.com/products/${id}`).then(res => ({
-             id: res.data.id,
-             name: res.data.title,
-             price: res.data.price,
-             image: res.data.thumbnail
-          }))
-        );
-        const products = await Promise.all(promises);
+        const res = await apiClient.get('/products');
+
+        const products = res.data
+        .filter(p => p._id && wishlistIds.includes(String(p._id)))
+        .map(p => ({
+            id: p._id, 
+            name: p.title,
+            price: p.price,
+            image: p.image
+        }));
         setWishlistItems(products);
       } catch (error) {
         console.error("Error fetching wishlist products:", error);
@@ -42,6 +43,13 @@ const Wishlist = () => {
       setWishlistItems([]);
     }
   }, [wishlistIds]);
+
+  // Fetch wishlist if user is logged in but wishlist hasn't been loaded yet
+  useEffect(() => {
+    if (user && wishlistStatus === 'idle') {
+      dispatch(fetchWishlistAsync(user.uid));
+    }
+  }, [user, wishlistStatus, dispatch]);
 
   const handleRemove = (id) => {
     dispatch(toggleWishlistAsync({ uid: user.uid, productId: String(id) }));  };
@@ -57,6 +65,7 @@ const Wishlist = () => {
   };
 
   return (
+
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col md:flex-row gap-8">
       
       {/* Left Sidebar Navigation */}
@@ -134,9 +143,8 @@ const Wishlist = () => {
                 
                 {/* Product Image */}
                 <div className="w-full aspect-square bg-gray-100 rounded-xl mb-4 overflow-hidden relative">
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-400 group-hover:scale-105 transition-transform duration-300">
-                    <span className="text-sm">Image</span>
-                  </div>
+                  < img src={item.image} 
+                  alt={item.name}  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"/>
                 </div>
 
                 {/* Product Info */}
