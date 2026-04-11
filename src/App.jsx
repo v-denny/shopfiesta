@@ -82,11 +82,12 @@ function App() {
           <Route path="/support" element={<Support />} />
           <Route path="/about" element={<About />} />
           <Route path="/shipping-returns" element={<ShippingReturns />} />
+          <Route path="/cancel" element={<Cart />} />
 
           {/* Protected routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} /> 
           <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-          <Route path="/confirmation" element={<ProtectedRoute><OrderConfirmation /></ProtectedRoute>} />
+          <Route path="/success" element={<ProtectedRoute><OrderConfirmation /></ProtectedRoute>} />
           <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         </Routes>
       </main>

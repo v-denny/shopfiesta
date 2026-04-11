@@ -130,7 +130,7 @@ const ProductDetail = () => {
           </span>
           {/* Multiply price by 1.2 to create a fake "original" price for the UI */}
           <span className="text-lg text-gray-400 line-through mb-1">
-            ${(product.price * 1.2).toFixed(2)}
+            ${(product.price).toFixed(2)}
           </span>
         </div>
 

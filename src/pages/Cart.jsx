@@ -17,6 +17,35 @@ const Cart = () => {
   const freeShippingThreshold = 100;
   const amountToFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
 
+  // NEW: Stripe Checkout Handler
+  const handleCheckout = async () => {
+    try {
+      // 1. Call your backend to create a session
+      // Make sure your backend route is: /api/payment/create-checkout-session
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/payment/create-checkout-session`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uid: user.uid, // Sending Firebase UID so backend can find the user in MongoDB
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        // 2. Redirect to Stripe's Hosted Page
+        window.location.href = data.url;
+      } else {
+        alert("Checkout failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      alert("Something went wrong with the payment server.");
+    }
+  };
+
   // Handle Delete with Database Sync
   const handleRemove = (productId) => {
     dispatch(removeFromCart(productId));
@@ -195,7 +224,10 @@ const Cart = () => {
               </button>
             </div>
 
-            <button className="w-full bg-[rgb(100,106,232)] hover:opacity-90 text-white font-medium py-4 rounded-md transition-colors text-lg shadow-sm">
+            <button 
+            onClick={handleCheckout}
+            disabled={items.length === 0}
+            className="w-full bg-[rgb(100,106,232)] hover:opacity-90 text-white font-medium py-4 rounded-md transition-colors text-lg shadow-sm">
               Proceed to Checkout
             </button>
             
