@@ -15,9 +15,6 @@ const OrderConfirmation = () => {
     }
   }, [sessionId, navigate]);
 
-  // Prevent the page from flashing briefly before kicking them out
-  if (!sessionId) return null;
-
   const orderDetails = {
     orderNumber: sessionId.slice(-10).toUpperCase(), 
     date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), 
