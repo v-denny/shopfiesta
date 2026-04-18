@@ -9,15 +9,14 @@ import { fetchWishlistAsync } from './store/wishlistSlice';
 // import axios from 'axios';
 import apiClient from './api/axiosConfig';
 
-
+//Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+
 // Pages
 import Home from './pages/Home';
 import Auth from './pages/Auth';
-
-// We will uncomment these imports as we build the files!
 import ProductListing from './pages/ProductListing';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
@@ -30,7 +29,9 @@ import About from './pages/AboutUs';
 import OrderConfirmation from './pages/OrderConfirmation';
 import ShippingReturns from './pages/ShippingReturns';
 
+//Analytics
 import { SpeedInsights } from "@vercel/speed-insights/react"
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
   const location = useLocation();
@@ -70,6 +71,7 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <SpeedInsights />
+      <Analytics/>
 
       {/* 4. Conditionally render Navbar */}
       {!hideNavAndFooter && <Navbar />}
