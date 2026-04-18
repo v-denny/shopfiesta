@@ -1,19 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 const OrderConfirmation = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
-  // Grab the session_id from the URL
-  const sessionId = searchParams.get('session_id');
+  const sessionId = searchParams.get('session_id');   // Grab the session_id from the URL
+  const [countdown, setCountdown] = useState(3); //State for our countdown timer
 
   useEffect(() => {
     // SECURITY CHECK: If there is no Stripe session ID, kick them back to the home page
     if (!sessionId) {
-      navigate('/'); 
+      // 1. Start a countdown timer for the UI
+      const timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+
+      // 2. Redirect them after 3 seconds so they have time to read the message
+      const redirect = setTimeout(() => {
+        navigate('/'); 
+      }, 3000);
+
+      // Cleanup timers if the component unmounts
+      return () => {
+        clearInterval(timer);
+        clearTimeout(redirect);
+      };
     }
   }, [sessionId, navigate]);
+
+  // UI FOR UNAUTHORIZED USERS (Replaces the white screen)
+  if (!sessionId) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center px-4">
+        {/* Popup Card */}
+        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border border-red-100 transform transition-all">
+          <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Invalid Session</h2>
+          <p className="text-gray-600 mb-6">
+            You cannot access this page directly. Redirecting to the homepage in <span className="font-bold text-[rgb(100,106,232)]">{countdown}</span> seconds...
+          </p>
+          {/* Loading Dots */}
+          <div className="flex justify-center space-x-2">
+             <div className="h-2 w-2 bg-[rgb(100,106,232)] rounded-full animate-bounce"></div>
+             <div className="h-2 w-2 bg-[rgb(100,106,232)] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+             <div className="h-2 w-2 bg-[rgb(100,106,232)] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const orderDetails = {
     orderNumber: sessionId.slice(-10).toUpperCase(), 
