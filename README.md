@@ -57,10 +57,10 @@ To run this project on your local machine, you will need to set up both the fron
 1. Clone the repository: `git clone https://github.com/v-denny/shopfiesta.git`
 2. Navigate to the frontend directory: `cd shopfiesta`
    * Install dependencies: `npm install`
-   * Create a `.env` file and add your `VITE_FIREBASE_*` keys and `VITE_API_URL=http://localhost:5000`.
+   * Create a `.env` file and add your `VITE_FIREBASE_*` keys and `VITE_API_URL=http://localhost:5173`.
    * Start the React server: `npm run dev`
-3. Navigate to your backend directory (if separated): `cd backend`
+3. Navigate to your backend directory (if separated): `cd shopfiesta-backend`
    * Install dependencies: `npm install`
-   * Create a `.env` file and add your `MONGO_URI`, `STRIPE_SECRET_KEY`, and `CLIENT_URL=http://localhost:5173`.
+   * Create a `.env` file and add your `MONGO_URI`, `STRIPE_SECRET_KEY`, and `CLIENT_URL=http://localhost:5000`.
    * Start the Express server: `npm run start` (or `nodemon`)
  
