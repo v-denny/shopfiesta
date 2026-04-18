@@ -30,6 +30,8 @@ import About from './pages/AboutUs';
 import OrderConfirmation from './pages/OrderConfirmation';
 import ShippingReturns from './pages/ShippingReturns';
 
+import { SpeedInsights } from "@vercel/speed-insights/react"
+
 function App() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -67,6 +69,8 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <SpeedInsights />
+
       {/* 4. Conditionally render Navbar */}
       {!hideNavAndFooter && <Navbar />}
       
