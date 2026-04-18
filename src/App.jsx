@@ -26,7 +26,7 @@ import Wishlist from './pages/Wishlist';
 import NotFound from './pages/NotFound';
 import Support from './pages/Support';
 import About from './pages/AboutUs';
-import Checkout from './pages/Checkout';
+// import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
 import ShippingReturns from './pages/ShippingReturns';
 
@@ -88,7 +88,7 @@ function App() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} /> 
           <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
           <Route path="/success" element={<ProtectedRoute><OrderConfirmation /></ProtectedRoute>} />
-          <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+          {/* <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} /> */}
         </Routes>
       </main>
 
