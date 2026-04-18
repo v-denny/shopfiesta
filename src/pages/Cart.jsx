@@ -21,14 +21,14 @@ const Cart = () => {
   const handleCheckout = async () => {
     try {
       // 1. Call your backend to create a session
-      // Make sure your backend route is: /api/payment/create-checkout-session
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/payment/create-checkout-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          uid: user.uid, // Sending Firebase UID so backend can find the user in MongoDB
+          uid: user?.uid, // Sending Firebase UID so backend can find the user in MongoDB
+          client_url: window.location.origin,
         }),
       });
 
@@ -38,8 +38,7 @@ const Cart = () => {
         // 2. Redirect to Stripe's Hosted Page
         window.location.href = data.url;
       } else {
-        alert("Checkout failed. Please try again.");
-      }
+      alert(`Checkout failed: ${data.error || data.message || "Unknown error"}`);    }
     } catch (error) {
       console.error("Error during checkout:", error);
       alert("Something went wrong with the payment server.");
@@ -225,11 +224,10 @@ const Cart = () => {
             </div>
 
             <button 
-            onClick={handleCheckout}
+            onClick={user ? handleCheckout : () => window.location.href = '/auth'}
             disabled={items.length === 0}
             className="w-full bg-[rgb(100,106,232)] hover:opacity-90 text-white font-medium py-4 rounded-md transition-colors text-lg shadow-sm">
-              Proceed to Checkout
-            </button>
+            {user ? "Proceed to Checkout" : "Log in to Checkout"}            </button>
             
             <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
