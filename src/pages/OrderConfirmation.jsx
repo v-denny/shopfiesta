@@ -1,11 +1,26 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 const OrderConfirmation = () => {
-  // Mock order details based on the design document
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
+  // Grab the session_id from the URL
+  const sessionId = searchParams.get('session_id');
+
+  useEffect(() => {
+    // SECURITY CHECK: If there is no Stripe session ID, kick them back to the home page
+    if (!sessionId) {
+      navigate('/'); 
+    }
+  }, [sessionId, navigate]);
+
+  // Prevent the page from flashing briefly before kicking them out
+  if (!sessionId) return null;
+
   const orderDetails = {
-    orderNumber: 'SF987654321', 
-    date: 'October 27, 2023', 
+    orderNumber: sessionId.slice(-10).toUpperCase(), 
+    date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), 
     total: 110.00, 
     method: 'Visa **** 1234', 
     deliveryDate: 'November 3, 2023', 
@@ -65,8 +80,7 @@ const OrderConfirmation = () => {
         <Link 
           to="/products" 
           className="bg-[rgb(100,106,232)] hover:opacity-90 text-white font-bold px-10 py-4 rounded-md transition-all shadow-md"
-        >
-          Continue Shopping 
+        >    Continue Shopping 
         </Link>
         <Link 
           to="/dashboard" 
