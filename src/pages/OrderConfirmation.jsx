@@ -5,20 +5,18 @@ const OrderConfirmation = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');   // Grab the session_id from the URL
-  const [countdown, setCountdown] = useState(3); //State for our countdown timer
+  const [countdown, setCountdown] = useState(5); //State for our countdown timer
 
   useEffect(() => {
     // SECURITY CHECK: If there is no Stripe session ID, kick them back to the home page
     if (!sessionId) {
-      // 1. Start a countdown timer for the UI
       const timer = setInterval(() => {
         setCountdown((prev) => prev - 1);
       }, 1000);
 
-      // 2. Redirect them after 3 seconds so they have time to read the message
       const redirect = setTimeout(() => {
         navigate('/'); 
-      }, 3000);
+      }, 5000);
 
       // Cleanup timers if the component unmounts
       return () => {
