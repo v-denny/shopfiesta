@@ -1,5 +1,5 @@
-import {signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword , sendEmailVerification } from 'firebase/auth';
-import {auth, googleProvider} from '../firebase';
+import {signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword , sendEmailVerification, updateProfile } from 'firebase/auth';
+import {auth, googleProvider } from '../firebase';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../store/authSlice';
@@ -32,19 +32,21 @@ const Auth = () => {
       // 2. If user doesn't exist, Create the account
       if (loginError.code === 'auth/user-not-found' || loginError.code === 'auth/invalid-credential') {
         res = await createUserWithEmailAndPassword(auth, email, password);
+
+        const generatedName = email.split('@')[0];
+        await updateProfile(res.user, { displayName: generatedName });
+
         await sendEmailVerification(res.user);
         alert("Account created! Please check your email for a verification link before logging in.");
         return; 
       } else {
-        // Rethrow other errors (like wrong password) to the outer catch
         throw loginError;
       }
     }
-
-    // 3. Success: Update Redux and Navigate (Only for logged-in, verified users)
     dispatch(login({ 
       email: res.user.email, 
-      uid: res.user.uid 
+      uid: res.user.uid,
+      displayName: res.user.displayName || email.split('@')[0]
     }));
     navigate('/dashboard'); 
 
