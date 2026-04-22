@@ -33,7 +33,7 @@ https://github.com/user-attachments/assets/61e66531-aae0-406a-8d2c-ee89a60285e0
    git clone [https://github.com/YOUR_USERNAME/shopfiesta.git](https://github.com/YOUR_USERNAME/shopfiesta.git)
    cd shopfiesta
 2. Install dependencies:
-   ``` npm install
+   ```npm install
 3. Create a .env file in the root directory and add your keys:
    ```VITE_FIREBASE_API_KEY=your_api_key
    VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
