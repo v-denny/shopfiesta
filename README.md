@@ -40,7 +40,6 @@ https://github.com/user-attachments/assets/61e66531-aae0-406a-8d2c-ee89a60285e0
    VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
    VITE_FIREBASE_PROJECT_ID=your_project_id
    
-### Ensure this points to your running backend server
-`VITE_API_URL=http://localhost:5000`
+**Ensure this points to your running backend server:** `VITE_API_URL=http://localhost:5000`
 
 4. Start the development server: `npm run dev`
