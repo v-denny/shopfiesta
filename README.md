@@ -1,7 +1,7 @@
 # Documentation: ShopFiesta Ecommerce
 ShopFiesta is a full-stack e-commerce application. Recently completing Phase 2 of development, the application features a functional responsive frontend integrated with global state management, third-party authentication, a persistent MongoDB database, and a secure payment gateway integration via Stripe.
 
-> **Backend Integration:** This frontend is powered by the ShopFiesta Node.js API. You can find the backend repository [here](LINK_TO_YOUR_BACKEND_REPO).
+> **Backend Integration:** This frontend is powered by the ShopFiesta Node.js API. You can find the backend repository [here](https://github.com/v-denny/shopfiesta-backend).
 
 **Live Demo:** [Click here to view the live project](https://shopfiesta.vercel.app/)
 
@@ -33,14 +33,14 @@ https://github.com/user-attachments/assets/61e66531-aae0-406a-8d2c-ee89a60285e0
    git clone [https://github.com/YOUR_USERNAME/shopfiesta.git](https://github.com/YOUR_USERNAME/shopfiesta.git)
    cd shopfiesta
 
-2. Install dependencies:`npm install`
+2. Install dependencies: `npm install`
 
 3. Create a .env file in the root directory and add your keys:
    ```VITE_FIREBASE_API_KEY=your_api_key
    VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
    VITE_FIREBASE_PROJECT_ID=your_project_id
    
-# Ensure this points to your running backend server
+### Ensure this points to your running backend server
 `VITE_API_URL=http://localhost:5000`
 
-4. Start the development server:`npm run dev`
+4. Start the development server: `npm run dev`
