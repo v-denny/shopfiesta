@@ -39,8 +39,8 @@ const Navbar = () => {
           {/* Left: Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                SF
+              <div className="w-16 h-16">
+                <img src="\logo.svg" alt="Logo"  />
               </div>
               <span className="text-2xl font-bold text-gray-900 tracking-tight">
                 ShopFiesta
