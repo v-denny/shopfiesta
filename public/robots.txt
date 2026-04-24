@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /dashboard
+Disallow: /checkout
+Disallow: /cart
+Disallow: /success
+
+Sitemap: https://shopfiesta.vercel.app/sitemap.xml

@@ -1,0 +1,12 @@
+# ShopFiesta
+ShopFiesta is a full-stack e-commerce platform offering festive finds and holiday items. 
+
+## Navigation
+- [Home](https://shopfiesta.vercel.app/)
+- [Products](https://shopfiesta.vercel.app/products)
+- [About Us](https://shopfiesta.vercel.app/about)
+- [Support](https://shopfiesta.vercel.app/support)
+
+## Important Notes
+- All prices are in USD.
+- Free shipping is offered on orders over $100.
